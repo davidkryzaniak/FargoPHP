@@ -15,6 +15,14 @@
     //Again, Do not include the "http://" or the ending /
     //$myFargo = new FargoPHP('myfargodns.dyndns.com','admin','admin');
 
+    /*
+     * Remember, relays are numbered differently
+     * Fargo Relay #1 = 0
+     * Fargo Relay #2 = 1
+     * Fargo Relay #3 = 2
+     * etc...
+     */
+
     //shutoff all relays
     $myFargo->setAllTo(FALSE);
 
