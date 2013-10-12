@@ -2,13 +2,18 @@
 <pre>
 <?php
 
-    //turn on debug mode
-    error_reporting(E_ALL);
-    ini_set('display_errors', '1');
-
+    //Get the class
     require_once('FargoPHP/FargoPHP.class.php');
 
-    $myFargo = new FargoPHP('192.168.1.34','admin','Kryzaniak12345');
+
+    //Create a new FargoPHP object.
+    //Takes in the IP address (or DNS/Domain name) of the Fargo. Do not include the "http://" or the ending /
+    //Username, Password
+    $myFargo = new FargoPHP('192.168.1.34','your-username','your-password');
+
+    //if you have DNS setup, you can use
+    //Again, Do not include the "http://" or the ending /
+    //$myFargo = new FargoPHP('myfargodns.dyndns.com','admin','admin');
 
     //shutoff all relays
     $myFargo->setAllTo(FALSE);

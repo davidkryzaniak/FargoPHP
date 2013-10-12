@@ -26,6 +26,16 @@ class FargoPHP {
     private $relay_status = '/p/relayStatus.xml';
     private $out_of_bounds_number = 'Out of Bounds! That number is either too high, or too low!';
 
+    //General settings
+    private $sleep_time = 100;
+
+
+    /**
+     * @param $url The URL ro
+     * @param $username
+     * @param $password
+     * @param string $protocol
+     */
     public function __construct($url,$username,$password,$protocol='http://')
     {
         $this->url = $url;
@@ -37,11 +47,13 @@ class FargoPHP {
         $this->request($this->url.$this->connect_uri);
     }
 
-    public function __destruct()
-    {
-        $this->url = $this->username = $this->password = $this->connection = NULL;
-    }
-
+    /**
+     * If the relay is ON, turn it OFF. If the relay is OFF, turn it ON.
+     *
+     * @param int $relay_numbered Which relay you want to change
+     *
+     * @return mixed|string 1 = On, 0 = Off, or an out of bounds alert
+     */
     public function relayFlipState($relay_numbered=0)
     {
         $relays = $this->parseXMLAllRelayStatusToArray();
@@ -51,6 +63,14 @@ class FargoPHP {
             return $this->out_of_bounds_number;
     }
 
+    /**
+     * Set a specific relay to a given state.
+     *
+     * @param $relay_numbered Number of the relay you want to change
+     * @param bool $set_state TRUE = All On, FALSE = All Off
+     *
+     * @return mixed|string 1 = On, 0 = Off, or an out of bounds alert
+     */
     public function setRelayState($relay_numbered, $set_state=TRUE)
     {
         $relays = $this->parseXMLAllRelayStatusToArray();
@@ -61,6 +81,11 @@ class FargoPHP {
             return $this->out_of_bounds_number;
     }
 
+    /**
+     * Set all the relays to the same state
+     *
+     * @param bool $state TRUE = All On, FALSE = All Off
+     */
     public function setAllTo($state=TRUE)
     {
         $relays = $this->parseXMLAllRelayStatusToArray();
@@ -70,6 +95,13 @@ class FargoPHP {
 
     }
 
+    /**
+     * Returns the state of a given relay
+     *
+     * @param int $relay_numbered between 0 and 3 (if its R4) or 7 (if its a R8)
+     *
+     * @return string 1 = On, 0 = Off, or an out of bounds alert
+     */
     public function getRelayState($relay_numbered=0)
     {
         $relays = $this->parseXMLAllRelayStatusToArray();
@@ -79,11 +111,31 @@ class FargoPHP {
             return $this->out_of_bounds_number;
     }
 
+    /**
+     * Creates an array of every relay with it's state. 1 = On, 0 = Off
+     *
+     * @return array Relays and their states
+     */
     public function getAllRelayStates()
     {
         return $this->parseXMLAllRelayStatusToArray();
     }
 
+    /**
+     * Used for debugging. Sets the length of time between requests
+     *
+     * @param $micro_seconds INT Number of microseconds to wait.
+     */
+    public function setSleepTime($micro_seconds)
+    {
+        $this->sleep_time = $micro_seconds;
+    }
+
+    /**
+     * Creates an array of every relay with it's state. 1 = On, 0 = Off
+     *
+     * @return array Relays and their states
+     */
     private function parseXMLAllRelayStatusToArray()
     {
         $xml = $this->request($this->protocol.$this->url.$this->relay_status,TRUE,TRUE);
@@ -132,9 +184,12 @@ class FargoPHP {
             return $response;
     }
 
+    /**
+     * Get the time to sleep
+     */
     private function nap()
     {
-        usleep(100);
+        usleep($this->sleep_time);
     }
 
 }
