@@ -2,6 +2,10 @@
 <pre>
 <?php
 
+ini_set('display_errors',1);
+ini_set('display_startup_errors',1);
+error_reporting(-1);
+
     //Get the class
     require_once('FargoPHP/FargoPHP.class.php');
 
@@ -9,7 +13,7 @@
     //Create a new FargoPHP object.
     //Takes in the IP address (or DNS/Domain name) of the Fargo. Do not include the "http://" or the ending /
     //Username, Password
-    $myFargo = new FargoPHP('192.168.1.34','your-username','your-password');
+    $myFargo = new FargoPHP('192.168.1.34','admin','Kryzaniak12345');
 
     //if you have DNS setup, you can use
     //Again, Do not include the "http://" or the ending /
@@ -54,11 +58,17 @@
     //get an array of the relays and their states
     print_r($myFargo->getAllRelayStates());
 
+    echo "\n\r";//line break
+
     //try to turn ON #8 (which doesn't exist on an R8)
     echo "Relay #8 is currently: ".$myFargo->relayFlipState(8);
 
+    echo "\n\r";//line break
+
     //That's all for this example! Turn off all the relays
     $myFargo->setAllTo(FALSE);
+
+    echo "Current Temperature: ".$myFargo->getTemp();
 
     //close the connection to the Fargo
     $myFargo = NULL;

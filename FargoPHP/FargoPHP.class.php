@@ -24,6 +24,8 @@ class FargoPHP {
     private $change_relay_state = '/p/relays.cgi?state=';
     private $remove_success_msg = 'success! ';
     private $relay_status = '/p/relayStatus.xml';
+    private $tekDate = '/p/tekDate.xml';
+    private $led = '/p/leds.cgi?led=';
     private $out_of_bounds_number = 'Out of Bounds! That number is either too high, or too low!';
 
     //General settings
@@ -122,6 +124,41 @@ class FargoPHP {
     }
 
     /**
+     * Return all the system data
+     */
+    public function getAllSystemInformation()
+    {
+        return $this->parseXMLAllRelayStatusToArray();
+    }
+
+    /**
+     * @return string Time that is set on the fargo Wed 13, 2013
+     */
+    public function getTime()
+    {
+        $data = $this->parseXMLTekDateToArray();
+        return $data['date'];
+    }
+
+    /**
+     * @return string Voltage being drawn. Like 10.98 VDC
+     */
+    public function getVolts()
+    {
+        $data = $this->parseXMLTekDateToArray();
+        return $data['volts'];
+    }
+
+    /**
+     * @return string Current temperature of the device (in celsius) like 33.0C
+     */
+    public function getTemp()
+    {
+        $data = $this->parseXMLTekDateToArray();
+        return $data['temperature'];
+    }
+
+    /**
      * Used for debugging. Sets the length of time between requests
      *
      * @param $micro_seconds INT Number of microseconds to wait.
@@ -129,6 +166,11 @@ class FargoPHP {
     public function setSleepTime($micro_seconds)
     {
         $this->sleep_time = $micro_seconds;
+    }
+
+    public function getLEDState($led_number)
+    {
+        //todo FINISH THIS!
     }
 
     /**
@@ -146,6 +188,26 @@ class FargoPHP {
         xml_parser_free($parser);
         //Yikes! This is messy!
         return explode(',',$values[$tags['state'][0]]['value']);
+    }
+
+    /**
+     * Gets the system setting
+     *
+     * @return array
+     */
+    private function parseXMLTekDateToArray()
+    {
+        $xml = $this->request($this->protocol.$this->url.$this->tekDate,TRUE,TRUE);
+        $parser = xml_parser_create();
+        xml_parser_set_option($parser, XML_OPTION_CASE_FOLDING, 0);
+        xml_parser_set_option($parser, XML_OPTION_SKIP_WHITE, 1);
+        xml_parse_into_struct($parser, $xml, $values, $tags);
+        xml_parser_free($parser);
+        unset($tags['response']);
+        $returnArray = array();
+        foreach($tags as $singleTag=>$value)
+            $returnArray[$singleTag] = $values[$value[0]]['value'];
+        return $returnArray;
     }
 
     /**
