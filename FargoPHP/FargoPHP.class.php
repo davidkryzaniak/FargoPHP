@@ -33,10 +33,12 @@ class FargoPHP {
 
 
     /**
-     * @param $url The URL ro
-     * @param $username
-     * @param $password
-     * @param string $protocol
+     * Constructor. Makes the initial connection to the Fargo.
+     *
+     * @param String $url The URL ro
+     * @param String $username Your username
+     * @param String $password Your password
+     * @param String $protocol Optional. Use this if you want to connect over ssl.
      */
     public function __construct($url,$username,$password,$protocol='http://')
     {
@@ -44,6 +46,7 @@ class FargoPHP {
         $this->username = $username;
         $this->password = $password;
         $this->protocol = $protocol;
+        $this->max_relay = count($this->getAllRelayStates());
 
         //just a test. Throws an error if not configured correctly.
         $this->request($this->url.$this->connect_uri);
@@ -68,7 +71,7 @@ class FargoPHP {
     /**
      * Set a specific relay to a given state.
      *
-     * @param $relay_numbered Number of the relay you want to change
+     * @param int $relay_numbered Number of the relay you want to change
      * @param bool $set_state TRUE = All On, FALSE = All Off
      *
      * @return mixed|string 1 = On, 0 = Off, or an out of bounds alert
@@ -124,7 +127,7 @@ class FargoPHP {
     }
 
     /**
-     * Return all the system data
+     * @return array all the system data
      */
     public function getAllSystemInformation()
     {
