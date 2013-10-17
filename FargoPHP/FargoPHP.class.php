@@ -35,7 +35,7 @@ class FargoPHP {
     /**
      * Constructor. Makes the initial connection to the Fargo.
      *
-     * @param String $url The URL ro
+     * @param String $url The URL to the Fargo (like 192.168.1.32 or myfargo.dns-service.com)
      * @param String $username Your username
      * @param String $password Your password
      * @param String $protocol Optional. Use this if you want to connect over ssl.
